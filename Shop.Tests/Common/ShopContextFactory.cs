@@ -10,12 +10,22 @@ namespace Shop.Tests.Common
     {
         public static Client UserA = new Client()
         {
-            Id = Guid.NewGuid()
+            Id = Guid.NewGuid(),
+            FirstName = "",
+            LastName = "",
+            Patronymic = "",
+            Address = "",
+            PhoneNumber = ""
         };
     
         public static Client UserB = new Client()
         {
-            Id = Guid.NewGuid()
+            Id = Guid.NewGuid(),
+            FirstName = "",
+            LastName = "",
+            Patronymic = "",
+            Address = "",
+            PhoneNumber = ""
         };
 
         public static Guid OrderIdForDelete = Guid.NewGuid();
@@ -46,6 +56,7 @@ namespace Shop.Tests.Common
             var context = new ShopDbContext(options);
             context.Database.EnsureCreated();
 
+            context.Clients.AddRange(UserA, UserB);
             context.Articles.AddRange(oldArticle, newArticle);
 
             context.Orders.AddRange(
@@ -53,7 +64,7 @@ namespace Shop.Tests.Common
                 {
                     Id = Guid.Parse("A6BB65BB-5AC2-4AFA-8A28-2616F675B825"),
                     Client = UserA,
-                    Articles = new List<Article>(),
+                    Articles = new List<Article> { oldArticle, newArticle },
                     OrderDate = DateTime.Today,
                     SendingDate = null
                     
@@ -62,7 +73,7 @@ namespace Shop.Tests.Common
                 {
                     Id = Guid.Parse("909F7C29-891B-4BE1-8504-21F84F262084"),
                     Client = UserB,
-                    Articles = new List<Article>(),
+                    Articles = new List<Article> { oldArticle, newArticle },
                     OrderDate = DateTime.Today,
                     SendingDate = null
                 },
@@ -70,7 +81,7 @@ namespace Shop.Tests.Common
                 {
                     Id = OrderIdForDelete,
                     Client = UserA,
-                    Articles = new List<Article>(),
+                    Articles = new List<Article> { oldArticle, newArticle },
                     OrderDate = DateTime.Today,
                     SendingDate = null
                 },
@@ -78,7 +89,7 @@ namespace Shop.Tests.Common
                 {
                     Id = OrderIdForUpdate,
                     Client = UserB,
-                    Articles = new List<Article>(),
+                    Articles = new List<Article> { oldArticle },
                     OrderDate = DateTime.Today,
                     SendingDate = null
                 }

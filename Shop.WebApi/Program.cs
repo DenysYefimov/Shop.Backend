@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Shop.WebApi.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +45,13 @@ builder.Services.AddAuthentication(config =>
         options.RequireHttpsMetadata = false;
     });
 
+builder.Services.AddSwaggerGen(config =>
+{
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    config.IncludeXmlComments(xmlPath);
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -60,6 +68,12 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+app.UseSwagger();
+app.UseSwaggerUI(config =>
+{
+    config.RoutePrefix = string.Empty;
+    config.SwaggerEndpoint("swagger/v1/swagger.json", "Shop API");
+});
 app.UseCustomExceptionHandler();
 app.UseRouting();
 app.UseHttpsRedirection();
