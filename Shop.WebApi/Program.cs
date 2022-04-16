@@ -9,6 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Shop.WebApi.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.IO;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Shop.WebApi;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,12 +49,12 @@ builder.Services.AddAuthentication(config =>
         options.RequireHttpsMetadata = false;
     });
 
-builder.Services.AddSwaggerGen(config =>
-{
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    config.IncludeXmlComments(xmlPath);
-});
+builder.Services.AddVersionedApiExplorer(options =>
+                options.GroupNameFormat = "'v'VVV");
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>,
+        ConfigureSwaggerOptions>();
+builder.Services.AddSwaggerGen();
+builder.Services.AddApiVersioning();
 
 var app = builder.Build();
 
@@ -68,11 +72,18 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+
 app.UseSwagger();
+var provider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
 app.UseSwaggerUI(config =>
 {
-    config.RoutePrefix = string.Empty;
-    config.SwaggerEndpoint("swagger/v1/swagger.json", "Shop API");
+    foreach (var description in provider.ApiVersionDescriptions)
+    {
+        config.SwaggerEndpoint(
+            $"/swagger/{description.GroupName}/swagger.json",
+            description.GroupName.ToUpperInvariant());
+        config.RoutePrefix = string.Empty;
+    }
 });
 app.UseCustomExceptionHandler();
 app.UseRouting();
@@ -80,6 +91,7 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseApiVersioning();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
