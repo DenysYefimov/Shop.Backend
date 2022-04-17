@@ -8,13 +8,23 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Shop.WebApi.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.IO;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Shop.WebApi;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Shop.WebApi.Services;
+using Serilog.Events;
+using Serilog;
+
+Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .WriteTo.File("ShopWebAppLog-.txt", rollingInterval:
+                    RollingInterval.Day)
+                .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog();
 
 builder.Services.AddAutoMapper(config =>
 {
@@ -56,6 +66,9 @@ builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>,
 builder.Services.AddSwaggerGen();
 builder.Services.AddApiVersioning();
 
+builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -68,7 +81,7 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception exception)
     {
-
+        Log.Fatal(exception, "An error occurred while app initialization");
     }
 }
 
