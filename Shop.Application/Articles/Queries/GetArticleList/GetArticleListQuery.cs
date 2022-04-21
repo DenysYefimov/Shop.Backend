@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Shop.Application.Articles.Queries.GetArticleList;
 using System;
 
 namespace Shop.Application.Articles.Queries.GetArticleList

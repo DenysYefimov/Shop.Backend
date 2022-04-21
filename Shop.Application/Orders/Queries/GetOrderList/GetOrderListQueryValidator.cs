@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using System;
 
 namespace Shop.Application.Orders.Queries.GetOrderList
 {

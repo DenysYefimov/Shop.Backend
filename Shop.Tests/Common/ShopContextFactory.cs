@@ -11,21 +11,21 @@ namespace Shop.Tests.Common
         public static Client UserA = new Client()
         {
             Id = Guid.NewGuid(),
-            FirstName = "",
-            LastName = "",
-            Patronymic = "",
-            Address = "",
-            PhoneNumber = ""
+            FirstName = ".",
+            LastName = ".",
+            Patronymic = ".",
+            Address = ".",
+            PhoneNumber = "."
         };
     
         public static Client UserB = new Client()
         {
             Id = Guid.NewGuid(),
-            FirstName = "",
-            LastName = "",
-            Patronymic = "",
-            Address = "",
-            PhoneNumber = ""
+            FirstName = ".",
+            LastName = ".",
+            Patronymic = ".",
+            Address = ".",
+            PhoneNumber = "."
         };
 
         public static Guid OrderIdForDelete = Guid.NewGuid();
@@ -34,18 +34,18 @@ namespace Shop.Tests.Common
         public static Article oldArticle = new Article()
         {
             Id = Guid.NewGuid(),
-            Country = "",
-            Name = "",
-            Producer = "",
-            Specifications = ""
+            Country = ".",
+            Name = ".",
+            Producer = ".",
+            Specifications = "."
         };
         public static Article newArticle = new Article()
         {
             Id = Guid.NewGuid(),
-            Country = "",
-            Name = "",
-            Producer = "",
-            Specifications = ""
+            Country = ".",
+            Name = ".",
+            Producer = ".",
+            Specifications = "."
         };
 
         public static ShopDbContext Create()

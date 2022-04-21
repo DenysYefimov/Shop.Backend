@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Shop.Domain.Entities;
-using System;
 
 namespace Shop.Application.Orders.Queries.GetOrderList
 {
